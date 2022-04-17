@@ -18,7 +18,8 @@ public class ListingsController {
     }
 
     @GetMapping
-    public List<Listings> getListingsByTitleType(@RequestParam("title") String title,@RequestParam("type") String type) {
+    public List<Listings> getListingsByTitleType(@RequestParam(value = "title",required = false) String title,
+                                                 @RequestParam(value = "type",required = false) String type) {
         return listingsService.getListingsByTitleType(title, type);
     }
 
@@ -37,9 +38,19 @@ public class ListingsController {
         return listingsService.addListing(listing);
     }
 
+    @PostMapping("/update")
+    public String updateListing(@RequestBody Listings listing){
+        return listingsService.updateListing(listing);
+    }
+
     @GetMapping("/{id}")
     public Listings getListingById(@PathVariable String id) {
         return listingsService.getListingById(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteListingById(@PathVariable String id,@RequestBody Listings listing) {
+        return listingsService.deleteListingById(id,listing);
     }
 
 }

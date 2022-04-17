@@ -16,11 +16,19 @@ public interface ListingsRepository extends MongoRepository<Listings,String> {
     Integer getMaxID();
 
     @Query(value ="{id: ?0}")           //SQL Equivalent : select count(*) from book
-    Listings getListingByID(Integer id);
+    Optional<Listings> getListingByID(Integer id);
 
     @Query(value ="{bestseller: true}")
     List<Listings> getBestSellers();
 
     @Query(value ="{'title':{'$regex':'?0','$options':'i'},type: ?1}")
     Optional<List<Listings>> getListingByTitleType(String title, String type);
+
+    @Query(value ="{'type': ?0}")
+    Optional<List<Listings>> getListingByType(String type);
+
+    @Query(value ="{'title':{'$regex':'?0','$options':'i'}}")
+    Optional<List<Listings>> getListingByTitle(String title);
+
+
 }

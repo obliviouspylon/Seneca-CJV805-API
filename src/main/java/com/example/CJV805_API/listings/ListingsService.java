@@ -2,7 +2,6 @@ package com.example.CJV805_API.listings;
 
 import com.example.CJV805_API.Exceptions.MissingDataException;
 import com.example.CJV805_API.property.PropertyRepository;
-import com.example.CJV805_API.property.PropertyType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +33,99 @@ public class ListingsService {
 
     public String addListing(Listings listing) {
 
+        checkListing(listing);
+
+        Integer maxID = listingsRepository.getMaxID();
+        listing.setId(maxID + 1);
+        listingsRepository.save(listing);
+        return "Listing Added!";
+    }
+
+    public List<Listings> getListingsByTitleType(String title, String type) {
+
+        Optional<List<Listings>> listingsFound;
+        if (Objects.equals(title, null) && Objects.equals(type, null)) {
+            throw new IllegalStateException("Need at least a Title or Property Type!");
+        } else if (Objects.equals(title, null)) {
+            checkValidPropertyType(type);
+            listingsFound = listingsRepository.getListingByType(type);
+        } else if (Objects.equals(type, null)) {
+            listingsFound = listingsRepository.getListingByTitle(title);
+        } else {
+            listingsFound = listingsRepository.getListingByTitleType(title, type);
+        }
+
+        if (listingsFound.isEmpty()) {
+            throw new IllegalStateException("No Listings Found!");
+        } else {
+            return listingsFound.get();
+        }
+    }
+
+    public List<Listings> getBestSellers() {
+        return listingsRepository.getBestSellers();
+    }
+
+    public Listings getListingById(String strId) {
+
+        Integer id = Str2IntID(strId);
+
+        Optional<Listings> foundListing = listingsRepository.getListingByID(id);
+        if (foundListing.isEmpty()) {
+            throw new IllegalStateException("Invalid ID!");
+        } else {
+            return foundListing.get();
+        }
+    }
+
+    public String updateListing(Listings listing) {
+
+        checkListing(listing);
+
+        Optional<Listings> foundListing = listingsRepository.getListingByID(listing.getId());
+        if (foundListing.isEmpty()) {
+            throw new IllegalStateException("Invalid ID!");
+        }
+        listing.set_id(foundListing.get().get_id());
+        Listings listingUpdated = listingsRepository.save(listing);
+        foundListing = listingsRepository.getListingByID(listing.getId());
+        if (foundListing.isEmpty()) {
+            throw new IllegalStateException("Invalid ID!");
+        } else if (listingUpdated.toString().equals(foundListing.get().toString())) {
+            return "Listing Updated!";
+        } else {
+            throw new IllegalStateException("Unable to Update!");
+        }
+    }
+
+    public String deleteListingById(String strId, Listings listing) {
+
+        Integer id = Str2IntID(strId);
+
+        Optional<Listings> foundListing = listingsRepository.getListingByID(id);
+        if (foundListing.isEmpty()) {
+            throw new IllegalStateException("Invalid ID!");
+        } else if (listing.get_id().equals(foundListing.get().get_id())) {
+            listingsRepository.deleteById(listing.get_id());
+            return ("Listing removed.");
+        } else {
+            throw new IllegalStateException("Unable to Delete ID!");
+        }
+    }
+
+    private Integer Str2IntID(String str) {
+        if (str == null) {
+            throw new IllegalStateException("Invalid ID!");
+        }
+        String ID_REGEX = "[0-9]+";
+        if (!str.matches(ID_REGEX)) {
+            throw new IllegalStateException("Invalid ID!");
+        } else {
+            return Integer.parseInt(str);
+        }
+    }
+
+    private void checkListing(Listings listing) {
         if (Objects.equals(listing.getImg(), "") || Objects.equals(listing.getImg(), null)) {
             throw new MissingDataException("Image URL");
         } else if (Objects.equals(listing.getTitle(), "") || Objects.equals(listing.getTitle(), null)) {
@@ -55,57 +147,14 @@ public class ListingsService {
         } else if (Objects.equals(listing.getLocation(), "") || Objects.equals(listing.getLocation(), null)) {
             throw new MissingDataException("Location");
         }
-
-        Optional<String> typeCheck = propertyRepository.checkPropertyType(listing.getType());
-        if (typeCheck.isEmpty()){
-            throw new IllegalStateException("Not a valid Property Type");
-        }
-
-        Integer maxID = listingsRepository.getMaxID();
-        listing.setId(maxID + 1);
-        listingsRepository.save(listing);
-        return "Property Added!";
+        checkValidPropertyType(listing.getType());
     }
 
-    public List<Listings> getListingsByTitleType(String title, String type) {
-
-        if (Objects.equals(title, "") || Objects.equals(title, null)) {
-            throw new MissingDataException("title");
-        } else if (Objects.equals(type, "") || Objects.equals(type, null)) {
-            throw new MissingDataException("Property Type");
-        }
-
+    private void checkValidPropertyType(String type) {
         Optional<String> typeCheck = propertyRepository.checkPropertyType(type);
-        if (typeCheck.isEmpty()){
+        if (typeCheck.isEmpty()) {
             throw new IllegalStateException("Not a valid Property Type");
         }
-
-        Optional<List<Listings>> listingsFound = listingsRepository.getListingByTitleType(title, type);
-        if (listingsFound.isEmpty()) {
-            throw new IllegalStateException("No Listings Found!");
-        } else {
-            return listingsFound.get();
-        }
-    }
-
-    public List<Listings> getBestSellers() {
-        return listingsRepository.getBestSellers();
-    }
-
-    public Listings getListingById(String strId) {
-
-        if (strId == null){
-            throw new IllegalStateException("Invalid ID!");
-        }
-        int id;
-        String ID_REGEX = "[0-9]+";
-        if (!strId.matches(ID_REGEX)){
-            throw new IllegalStateException("Invalid ID!");
-        } else {
-            id = Integer.parseInt(strId);
-        }
-
-        return listingsRepository.getListingByID(id);
     }
 
 }

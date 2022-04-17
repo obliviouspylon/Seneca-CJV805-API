@@ -64,6 +64,14 @@ public class Listings {
         this.houseRules = rules;
     }
 
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -155,7 +163,7 @@ public class Listings {
                 ", type='" + type + '\'' +
                 ", location='" + location + '\'' +
                 ", bestseller=" + bestseller +
-                ", Amenities=" + Amenities +
+                ", Amenities=" + Amenities.toString() +
                 ", House Rules=" + houseRules +
                 '}';
     }

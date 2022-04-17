@@ -57,4 +57,15 @@ public class Amenities {
     public void setAirportTransfer(Boolean airportTransfer) {
         this.airportTransfer = airportTransfer;
     }
+
+    @Override
+    public String toString() {
+        return "Amenities{" +
+                "pool=" + pool +
+                ", breakfast=" + breakfast +
+                ", wifi=" + wifi +
+                ", parking=" + parking +
+                ", airportTransfer=" + airportTransfer +
+                '}';
+    }
 }
