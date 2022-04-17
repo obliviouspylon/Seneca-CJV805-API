@@ -9,34 +9,43 @@ public class User {
     @Id
     private String _id;
     private String email;
-    private String passwordHash;
+    private String password;
     private String firstName;
     private String lastName;
+    private String salt;
 
     public User() {
     }
 
-    public User(String email, String passwordHash, String firstName, String lastName) {
+    public User(String email, String password, String firstName, String lastName) {
         this.email = email;
-        this.passwordHash = passwordHash;
+        this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
     }
 
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
+    }
+
     public String getEmail() {
-        return email;
+        return this.email;
     }
 
     public void setEmail(String email) {
         this.email = email;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getFirstName() {
@@ -55,13 +64,23 @@ public class User {
         this.lastName = lastName;
     }
 
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
+
     @Override
     public String toString() {
         return "User{" +
-                "email='" + email + '\'' +
-                ", passwordHash='" + passwordHash + '\'' +
+                "_id='" + _id + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", salt='" + salt + '\'' +
                 '}';
     }
 }
