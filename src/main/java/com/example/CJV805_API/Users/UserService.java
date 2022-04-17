@@ -56,15 +56,15 @@ public class UserService {
     }
 
     public boolean addUser(User user) {
-        if (Objects.equals(user.getEmail(), "")) {
+        if (Objects.equals(user.getEmail(), "") || Objects.equals(user.getEmail(),null)) {
             throw new MissingDataException("Email");
         } else if (emailFormatCheck(user.getEmail())) {
             throw new InvalidEmailFormatException();
-        } else if (Objects.equals(user.getPassword(), "")) {
+        } else if (Objects.equals(user.getPassword(), "")|| Objects.equals(user.getPassword(),null)) {
             throw new MissingDataException("Password");
-        } else if (Objects.equals(user.getFirstName(), "")) {
+        } else if (Objects.equals(user.getFirstName(), "")|| Objects.equals(user.getFirstName(),null)) {
             throw new MissingDataException("First Name");
-        } else if (Objects.equals(user.getLastName(), "")) {
+        } else if (Objects.equals(user.getLastName(), "")|| Objects.equals(user.getLastName(),null)) {
             throw new MissingDataException("Last Name");
         }
 

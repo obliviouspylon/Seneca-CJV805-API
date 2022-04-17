@@ -1,14 +1,12 @@
 package com.example.CJV805_API.listings;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "listings")
+@RequestMapping(path = "/listings")
 public class ListingsController {
 
     private final ListingsService listingsService;
@@ -20,7 +18,28 @@ public class ListingsController {
     }
 
     @GetMapping
-    public List<Listings> getListings() {
-        return listingsService.getListings();
+    public List<Listings> getListingsByTitleType(@RequestParam("title") String title,@RequestParam("type") String type) {
+        return listingsService.getListingsByTitleType(title, type);
     }
+
+    @GetMapping("/all")
+    public List<Listings> getAllListings() {
+        return listingsService.getAllListings();
+    }
+
+    @GetMapping("/bestseller")
+    public List<Listings> getBestSellers() {
+        return listingsService.getBestSellers();
+    }
+
+    @PostMapping("/add")
+    public String addListing(@RequestBody Listings listing){
+        return listingsService.addListing(listing);
+    }
+
+    @GetMapping("/{id}")
+    public Listings getListingById(@PathVariable String id) {
+        return listingsService.getListingById(id);
+    }
+
 }

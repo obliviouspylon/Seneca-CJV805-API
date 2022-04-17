@@ -1,10 +1,14 @@
 package com.example.CJV805_API.listings;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Map;
 @Document("listings")
 public class Listings {
 
@@ -18,13 +22,14 @@ public class Listings {
     private String type;
     private String location;
     private Boolean bestseller;
-    private Object Amenities;
+    private Amenities Amenities;
+    @Field("House Rules")
     private List<String> houseRules;
 
     public Listings() {
     }
 
-    public Listings(Integer id, String title, String img, String description, Integer price, String type, String location, Boolean bestseller, Object amenities, List<String> houseRules) {
+    public Listings(Integer id, String title, String img, String description, Integer price, String type, String location, Boolean bestseller, com.example.CJV805_API.listings.Amenities amenities, List<String> houseRules) {
         this.id = id;
         this.title = title;
         this.img = img;
@@ -37,7 +42,7 @@ public class Listings {
         this.houseRules = houseRules;
     }
 
-    public Listings(String title, String img, String description, Integer price, String type, String location, Boolean bestseller, Object amenities, List<String> houseRules) {
+    public Listings(String title, String img, String description, Integer price, String type, String location, Boolean bestseller, com.example.CJV805_API.listings.Amenities amenities, List<String> houseRules) {
         this.title = title;
         this.img = img;
         this.description = description;
@@ -47,6 +52,16 @@ public class Listings {
         this.bestseller = bestseller;
         Amenities = amenities;
         this.houseRules = houseRules;
+    }
+
+    @JsonProperty("Amenities")
+    private void unpackAmenities(Map<String, Object> amen) {
+        this.Amenities = new Amenities((Boolean) amen.get("pool"), (Boolean) amen.get("breakfast"), (Boolean) amen.get("wifi"), (Boolean) amen.get("parking"), (Boolean) amen.get("airportTransfer"));
+    }
+
+    @JsonProperty("House Rules")
+    private void unpackHouseRules(List<String> rules) {
+        this.houseRules = rules;
     }
 
     public Integer getId() {
@@ -113,11 +128,11 @@ public class Listings {
         this.bestseller = bestseller;
     }
 
-    public Object getAmenities() {
+    public com.example.CJV805_API.listings.Amenities getAmenities() {
         return Amenities;
     }
 
-    public void setAmenities(Object amenities) {
+    public void setAmenities(com.example.CJV805_API.listings.Amenities amenities) {
         Amenities = amenities;
     }
 
@@ -141,7 +156,8 @@ public class Listings {
                 ", location='" + location + '\'' +
                 ", bestseller=" + bestseller +
                 ", Amenities=" + Amenities +
-                ", houseRules=" + houseRules +
+                ", House Rules=" + houseRules +
                 '}';
     }
+
 }
