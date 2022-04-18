@@ -101,6 +101,9 @@ public class ListingsService {
     public String deleteListingById(String strId, Listings listing) {
 
         Integer id = Str2IntID(strId);
+        if (listing.get_id()==null){
+            throw new IllegalStateException("Invalid ID!");
+        }
 
         Optional<Listings> foundListing = listingsRepository.getListingByID(id);
         if (foundListing.isEmpty()) {
